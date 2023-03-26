@@ -13,8 +13,14 @@ fn main() {
     println!("{:?}", config.game_directories);
 
     // Get executable paths
-    let vec_paths = play::search_for_executables(&config.search_string, config.game_directories);
-    println!("{:?}", vec_paths);
+    let vec_paths = play::search_for_executables(&config.search_string, config.game_directories).unwrap_or_else(|err| {
+        eprintln!("Problem finding game library paths: {err}");
+        process::exit(1);
+    });
 
-    play::run_paths(vec_paths);    
+    // Run executable paths
+    play::run_paths(vec_paths).unwrap_or_else(|err| {
+        eprintln!("Problem during run: {err}");
+        process::exit(1);
+    });    
 }

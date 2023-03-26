@@ -1,6 +1,5 @@
 use glob::{glob_with, MatchOptions};
 use std::path::PathBuf;
-use std::str::FromStr;
 use std::{process, io, env};
 
 pub struct Config {
@@ -19,35 +18,30 @@ impl Config {
     
         let search_string = args[1].clone();
 
-
-        // let mut game_directories_env: Vec<String> = vec![];
-
-        // let env_steam_path = env::var("steam_path").unwrap();
-        // let env_blizzard_path = env::var("blizzard_path").unwrap();
-    
-        // game_directories_env.push(env_steam_path);
-        // game_directories_env.push(env_blizzard_path);
-    
-        let steam_path = String::from_str("/home/dylan/Documents/play-test/SteamLibrary").unwrap();
-        let blizzard_path = String::from_str("/home/dylan/Documents/play-test/BlizzardLibrary").unwrap();
+        // paths
+        let mut steam_path = String::new();
+        let mut blizzard_path = String::new();
         // PC paths
-        let _steam_path_pc = "";
-        let _blizzard_path_pc = "";
+        if env::consts::OS == "windows" {
+            println!("Using windows");
+            steam_path.push_str("G:/SteamLibrary/steamapps/common");
+            blizzard_path.push_str("G:/Program Files (x86)");
+        } else { // other paths
+            return Err("Sorry, this program only works on windows systems!")
+        }
     
         // Put directories in a vector
         let mut game_directories: Vec<String> = vec![];
         game_directories.push(steam_path);
         game_directories.push(blizzard_path);
 
-
         Ok(Config { search_string, game_directories, })
     }
 }
 
-pub fn search_for_executables(search_term: &str, directories: Vec<String>) -> Vec<PathBuf> {
+pub fn search_for_executables(search_term: &str, directories: Vec<String>) -> Result<Vec<PathBuf>, &'static str> {
     if directories.len() == 0 {
-        println!("No game directories to search, are you sure they've been set?");
-        process::exit(1);
+        return Err("No game directories to search, are you sure they've been set?")
     }
    
     // Options we can set for our search
@@ -67,17 +61,15 @@ pub fn search_for_executables(search_term: &str, directories: Vec<String>) -> Ve
         }    
     }
 
-    vec_paths
+    return Ok(vec_paths)
 }
 
-pub fn run_paths(paths: Vec<PathBuf>) {
+pub fn run_paths(paths: Vec<PathBuf>) -> Result<(), &'static str> {
     // Choice logic
     // No executable found
     if paths.len() < 1 {
-        println!("Could not find a matching executable.");
-        process::exit(1);
+        return Err("Could not find a matching executable.");
     }
-
 
     let mut response = String::new();
     // One executable found
@@ -94,12 +86,11 @@ pub fn run_paths(paths: Vec<PathBuf>) {
                 let exe_path = paths[0].to_str().expect("Failed to stringify path");
                 process::Command::new(exe_path).output().expect("failed to execute process");
                 println!("Executed process!");
-                process::exit(1);
+                return Ok(());
             },
-            "n" => process::exit(1),
+            "n" => return Ok(()),
             _ => {
-                println!("Please respond with a 'y' or 'n'");
-                process::exit(1);
+                return Err("Please respond with a 'y' or 'n'");
             },
         };
     }
@@ -119,11 +110,9 @@ pub fn run_paths(paths: Vec<PathBuf>) {
         let choice: usize = match response.trim().parse() {
             Ok(num) => num,
             Err(_) => {
-                println!("Could not read your input, please try a valid number next time");
-                process::exit(1);
+                return Err("Could not read your input, please try a valid number next time");
             },
         };
-
 
         // Match response to an outcome
         match choice > 0 {
@@ -133,21 +122,19 @@ pub fn run_paths(paths: Vec<PathBuf>) {
                     let exe_path = paths[path_slice].to_str().expect("Failed to read number.");
                     process::Command::new(exe_path).output().expect("failed to execute process");
                     println!("Executed process!");
-                    process::exit(1);
+                    return Ok(())
                 }
-                if choice == vec_length + 1 {
-                    process::exit(1)
+                else if choice == vec_length + 1 {
+                    return Ok(())
                 }
-                if choice > vec_length + 1 {
-                    println!("Please choose a number within the correct range.");
-                    process::exit(1)
-                }
+                else if choice > vec_length + 1 {
+                    return Err("Please choose a number within the correct range.")
+                } 
             }
             _ => {
-                println!("Please respond with a valid number.");
-                process::exit(1);
+                return Err("Please respond with a valid number.")
             }
         }
-
     }
+    return Ok(())
 }
