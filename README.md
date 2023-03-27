@@ -45,4 +45,4 @@ Executed process!
 By selecting option #1 the game should launch and the `play` program exits out. If you were to select option #3, `play` would exit out without launching any executables.
 
 ## Known issues
-Some games will load wonky, and not bring in some user information that would exist if the game was launched through the proper game client. 
+Some games will load wonky, and not bring in user information that would exist if the game was launched through the proper game client. 
