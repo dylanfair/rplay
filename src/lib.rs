@@ -23,8 +23,7 @@ impl Config {
         let mut steam_path = String::new();
         let mut blizzard_path = String::new();
         // PC paths
-        if env::consts::OS == "windows" {
-            
+        if env::consts::OS == "windows" {            
             let steam_env = env::var("STEAM_PATH").unwrap_or_else(|_| {
                 eprintln!("No STEAM_PATH environment variable found");
                 String::new()
