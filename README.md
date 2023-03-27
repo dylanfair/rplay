@@ -19,7 +19,8 @@ That concludes the basic setup for the program. The program will be able to read
 Next step is to provide the program a search term for the game you'd like to play.
 
 For example if we wanted to play Apex Legends, I'd search for the game using 'play' like so:
-```
+
+```powershell
 > play apex
 Multiple executables found, which one would you like to start?
 1. "G:\\SteamLibrary\\steamapps\\common\\Apex Legends\\r5apex.exe"
@@ -30,7 +31,8 @@ Multiple executables found, which one would you like to start?
 
 ### Choose whether to launch the game or exit out
 From here if I want to play the game I'd select option #1, and if I wanted to cancel I would select option #3.
-```
+
+```powershell
 > play apex
 Multiple executables found, which one would you like to start?
 1. "G:\\SteamLibrary\\steamapps\\common\\Apex Legends\\r5apex.exe"
@@ -39,6 +41,7 @@ Multiple executables found, which one would you like to start?
 > 1
 Executed process!
 ```
+
 From there the game should launch and the 'play' program exits out. If you were to select option #3, the program would exit out without launching an executables.
 
 ## Known issues
