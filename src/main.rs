@@ -10,8 +10,6 @@ fn main() {
         process::exit(1);
     });
 
-    println!("{:?}", config.game_directories);
-
     // Get executable paths
     let vec_paths = play::search_for_executables(&config.search_string, config.game_directories).unwrap_or_else(|err| {
         eprintln!("Problem finding game library paths: {err}");
