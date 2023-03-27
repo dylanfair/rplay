@@ -9,32 +9,46 @@ pub struct Config {
 
 impl Config {
     pub fn build(args: &[String]) -> Result<Config, &'static str> {
+        // Arguments logic
         if args.len() < 2 {
             return Err("Need to supply a search term");
         }
         if args.len() > 2 {
             return Err("Too many arguments supplied.");
         }
-    
+        // Search string
         let search_string = args[1].clone();
 
-        // paths
+        // Paths logic
         let mut steam_path = String::new();
         let mut blizzard_path = String::new();
         // PC paths
         if env::consts::OS == "windows" {
-            println!("Using windows");
-            steam_path.push_str("G:/SteamLibrary/steamapps/common");
-            blizzard_path.push_str("G:/Program Files (x86)");
-        } else { // other paths
+            
+            let steam_env = env::var("STEAM_PATH").unwrap_or_else(|_| {
+                eprintln!("No STEAM_PATH environment variable found");
+                String::new()
+            });
+            let blizzard_env = env::var("BLIZZARD_PATH").unwrap_or_else(|_| {
+                eprintln!("No BLIZZARD_PATH environment variable found");
+                String::new()
+            });
+
+            steam_path.push_str(&steam_env);
+            blizzard_path.push_str(&blizzard_env);
+        } else { // other OS systems
             return Err("Sorry, this program only works on windows systems!")
         }
     
         // Put directories in a vector
         let mut game_directories: Vec<String> = vec![];
-        game_directories.push(steam_path);
-        game_directories.push(blizzard_path);
-
+        if !steam_path.is_empty() {
+            game_directories.push(steam_path);
+        }
+        if !blizzard_path.is_empty() {
+            game_directories.push(blizzard_path);
+        }
+        
         Ok(Config { search_string, game_directories, })
     }
 }
