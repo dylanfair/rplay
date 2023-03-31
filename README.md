@@ -1,5 +1,5 @@
 # rplay
-This repository holds the code I used to make `play`, a windows CLI to let a user jump into a game from anywhere on the command line just by typing in a partial name of the game
+This repository holds the code I used to make `play`, a windows CLI made in Rust that allows a user jump into a game from anywhere on the command line just by typing in a partial name of the game. I mainly made this program as a way to learn more about Rust and less so as a serious CLI tool, but wanted to share it anyway.
 
 ## How to use
 
